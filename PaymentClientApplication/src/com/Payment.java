@@ -27,7 +27,7 @@ public class Payment{
 	
 	
 	/*****Inserting backer payment.********/
-	public String insertBackerPayment(String consumerID,String conceptID,String paymentType, String bank, String paymentDate, String cardNo, 
+	public String insertBackerPayment(String consumerID,String conceptID,String UserType,String paymentType, String bank, String paymentDate, String cardNo, 
 			String nameOnCard, String cvv , 
 			String cardExpMonth , String cardExpYear 
 			)
@@ -51,29 +51,6 @@ public class Payment{
 			}
 			
 			
-	/*****************************Hashing details.*********************************************/		
-		
-	 Hashing paymentHash = new Hashing();
-	 
-	 /****************Payment details entered by user is hashed. ******************************************/
-	 String hcardNo = paymentHash.hashPassword(cardNo);
-	 //String hCardName = paymentHash.hashPassword(nameOnCard);
-	 String hcvv = paymentHash.hashPassword(cvv);
-	 
-	 
-			
-			
-/********************************Detail validation.************************************************************/
-			
-			/*********Invoke cardNumber validator from model class.********************/
-	         PaymentModel p = new PaymentModel();
-			
-			int cardNumberCount = p.validateCardNumber(cardNo);
-			
-			
-			
-			if((paymentType.equals("Debit")) || (paymentType.equals("debit")) || (paymentType.equals("credit")) || (paymentType.equals("Credit"))  && (cardNumberCount == 16) )  {
-			
 			
 			/*************Executing logic for Auto-generating payment id.******************************************************/	
 			
@@ -91,8 +68,8 @@ public class Payment{
 			
 			// create a prepared statement.
 			
-			String query = " insert into gb_payments(`PaymentID`,`paymentCode`,`PaymentType`,`bank`,`paymentDate`,`cardNo`,`NameOnCard`,`cvv`,`Buyerpayment`,`ProductID`,`ConsumerID`,`ConceptID`,`cardExpMonth`,`cardExpYear`)"
-			+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			String query = " insert into paymentservice.gb_payments(`PaymentID`,`paymentCode`,`UserType`,`PaymentType`,`bank`,`paymentDate`,`cardNo`,`NameOnCard`,`cvv`,`Buyerpayment`,`ProductID`,`ConsumerID`,`ConceptID`,`cardExpMonth`,`cardExpYear`)"
+			+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
 			
 			PreparedStatement preparedStmt = con.prepareStatement(query);
 			
@@ -102,43 +79,33 @@ public class Payment{
 			
 			preparedStmt.setInt(1, 0);
 			preparedStmt.setString(2, PaymentCode);
-			preparedStmt.setString(3, paymentType);
-			preparedStmt.setString(4, bank);
-			preparedStmt.setString(5, paymentDate);
-			preparedStmt.setString(6, hcardNo);
-			preparedStmt.setString(7,nameOnCard);
-			preparedStmt.setString(8, hcvv);
-			preparedStmt.setDouble(9,0);
-			preparedStmt.setString(10, "NA");
-			preparedStmt.setString(11, consumerID);
-			preparedStmt.setString(12, conceptID);
-			preparedStmt.setString(13, cardExpMonth);
-			preparedStmt.setString(14, cardExpYear);
+			preparedStmt.setString(3, UserType);
+			preparedStmt.setString(4, paymentType);
+			preparedStmt.setString(5, bank);
+			preparedStmt.setString(6, paymentDate);
+			preparedStmt.setString(7, cardNo);
+			preparedStmt.setString(8,nameOnCard);
+			preparedStmt.setString(9,cvv);
+			preparedStmt.setDouble(10,0);
+			preparedStmt.setString(11, "NA");
+			preparedStmt.setString(12, consumerID);
+			preparedStmt.setString(13, conceptID);
+			preparedStmt.setString(14, cardExpMonth);
+			preparedStmt.setString(15, cardExpYear);
 			
 			
 			//execute the statement.
 			preparedStmt.execute();
 			
 			
-			//Table or hash values.
-			
-			insertcardNumberforkey(cardNo,hcardNo);
-			insertCvvForKey(cvv,hcvv);
-			
 			
 			con.close();
 			
-			String newBackerPayment = readPayments();
+			String newBackerPayment = readBackerPayments();
 			output = "{\"status\":\"success\", \"data\": \"" + newBackerPayment + "\"}";
 			
 			//output = "Backer payment Inserted successfully" + "\n Your payment ID is: " +  PaymentCode;
 		}
-		
-	else
-	{
-			output = "Please enter valid details!";
-	}
-	}	
 	catch (Exception e)
 	{
 		output = "{\"status\":\"error\", \"data\": \"Error while inserting the backer payment.\"}";
@@ -151,7 +118,7 @@ public class Payment{
 	
 	
 	/*****Inserting buyer payment********/
-	public String insertBuyerPayment(String ConsumerID,String ProductID,String paymentType, String bank, String paymentDate, String cardNo , 
+	public String insertBuyerPayment(String ConsumerID,String ProductID,String UserType,String paymentType, String bank, String paymentDate, String cardNo , 
 			String NameOnCard, String cvv , 
 			String cardExpMonth , String cardExpYear 
 			)
@@ -173,25 +140,7 @@ public class Payment{
 				return "Error while connecting to the database!";
 			}
 			
-			/*****************************Hashing details.*********************************************/		
-			
-			 Hashing paymentHash = new Hashing();
-			 
-			 String hcardNo = paymentHash.hashPassword(cardNo);
-			 String hcvv = paymentHash.hashPassword(cvv);
-			
-			
-			
-/********************************Detail validation.************************************************************/
-			
-			/*********Invoke cardNumber validator from model class.********************/
-			 PaymentModel p = new PaymentModel();
-			
-			int cardNumberCount = p.validateCardNumber(cardNo);
-			
-			
-			
-			if((paymentType.equals("Debit")) || (paymentType.equals("debit")) || (paymentType.equals("credit")) || (paymentType.equals("Credit"))  && (cardNumberCount == 16) )  {
+	
 				
 			
 			/*************Executing logic for Auto-generating payment id.******************************************************/	
@@ -229,8 +178,8 @@ public class Payment{
 			
 			// create a prepared statement.
 			
-			String query = " insert into gb_payments(`PaymentID`,`paymentCode`,`PaymentType`,`bank`,`paymentDate`,`cardNo`,`NameOnCard`,`cvv`,`Buyerpayment`,`ProductID`,`ConsumerID`,`ConceptID`,`cardExpMonth`,`cardExpYear`)"
-			+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			String query = " insert into paymentservice.gb_payments(`PaymentID`,`paymentCode`,`UserType`,`PaymentType`,`bank`,`paymentDate`,`cardNo`,`NameOnCard`,`cvv`,`Buyerpayment`,`ProductID`,`ConsumerID`,`ConceptID`,`cardExpMonth`,`cardExpYear`)"
+			+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			
 			PreparedStatement preparedStmt = con.prepareStatement(query);
 			
@@ -240,41 +189,32 @@ public class Payment{
 			
 			preparedStmt.setInt(1, 0);
 			preparedStmt.setString(2, PaymentCode);
-			preparedStmt.setString(3, paymentType);
-			preparedStmt.setString(4, bank);
-			preparedStmt.setString(5, paymentDate);
-			preparedStmt.setString(6, hcardNo);
-			preparedStmt.setString(7,NameOnCard);
-			preparedStmt.setString(8, hcvv);
-			preparedStmt.setDouble(9,totalBuyingAmt);
-			preparedStmt.setString(10, ProductID);
-			preparedStmt.setString(11, ConsumerID);
-			preparedStmt.setString(12, "NA");
-			preparedStmt.setString(13, cardExpMonth);
-			preparedStmt.setString(14, cardExpYear);
+			preparedStmt.setString(3, UserType);
+			preparedStmt.setString(4, paymentType);
+			preparedStmt.setString(5, bank);
+			preparedStmt.setString(6, paymentDate);
+			preparedStmt.setString(7, cardNo);
+			preparedStmt.setString(8,NameOnCard);
+			preparedStmt.setString(9, cvv);
+			preparedStmt.setDouble(10,totalBuyingAmt);
+			preparedStmt.setString(11, ProductID);
+			preparedStmt.setString(12, ConsumerID);
+			preparedStmt.setString(13, "NA");
+			preparedStmt.setString(14, cardExpMonth);
+			preparedStmt.setString(15, cardExpYear);
 			
 			
 			//execute the statement.
 			preparedStmt.execute();
 			
-				//Table or hash values.
-			
-			insertcardNumberforkey(cardNo,hcardNo);
-			insertCvvForKey(cvv,hcvv);
 			
 			con.close();
 			
-			String newBuyerPayment = readPayments();
+			String newBuyerPayment = readBuyerPayments();
 			output = "{\"status\":\"success\", \"data\": \"" + newBuyerPayment + "\"}";
 			
 			//output = "Buyer payment Inserted successfully" + "\n Your payment ID is: "  + PaymentCode;
 			
-			
-			}
-			else {
-				
-				 output = "Please enter valid details!";
-			}
 	}
 	catch (Exception e)
 	{
@@ -286,8 +226,8 @@ public class Payment{
 	}
 	
 	
-	/*****************************************Method to read all payment details.********************************/
-	public String readPayments()
+	/*****************************************Method to read all backer payment details.********************************/
+	public String readBackerPayments()
 	{
 		//declare variable to capture output message.
 		
@@ -312,15 +252,13 @@ public class Payment{
 				+"<th>Bank Name</th>"
 				+ "<th>Payment Date</th>"
 				+ "<th>Name on card</th>"
-				+ "<th>BuyerPayment</th>"
 				+ "<th>ConsumerID</th>"
 				+ "<th>ConceptID</th>"
-				+ "<th>ProductID</th>"
 				+ "<th>Update</th>"
 				+ "<th>Remove</th></tr>";
 				
 				
-				String query = "select p.PaymentID, p.PaymentType , p.bank , p.paymentDate , p.NameOnCard , p.Buyerpayment , p.ProductID , p.ConsumerID , p.ConceptID from gb_payments p , hcardno ho , hcvv hv where  p.cardNo = ho.nvalue AND p.cvv = hv.nvalue ";
+				String query = "select * from paymentservice.gb_payments where UserType = 'Backer'";
 				//String query = "select * from gb_payments p";
 				Statement stmt = con.createStatement();
 				
@@ -349,9 +287,99 @@ public class Payment{
 					output += "<td>" + BankName + "</td>";
 					output += "<td>" + paymentDate + "</td>";
 					output += "<td>" + CardName + "</td>";
-					output += "<td>" + buyerAmt + "</td>";
 					output += "<td>" + consumerID + "</td>";
 					output += "<td>" + conceptID + "</td>";
+					
+					
+					// buttons
+					output += "<td><input name='btnUpdate' type='button' value='Update' "
+					+ "class='btnUpdate btn btn-secondary' data-itemid='" + PaymentID + "'></td>"
+					+ "<td><input name='btnRemove' type='button' value='Remove' "
+					+ "class='btnRemove btn btn-danger' data-itemid='" + PaymentID + "'></td></tr>";
+					
+						
+					}
+				
+				con.close();
+				
+				
+				// Complete the html table.
+					output += "</table>";
+		}
+		catch (Exception e)
+		{
+				output = "Error while reading the payments!";
+				
+				System.err.println(e.getMessage());
+		}
+	
+		return output;
+	}
+	
+	/*****************************************Method to read all buyer payment details.********************************/
+	public String readBuyerPayments()
+	{
+		//declare variable to capture output message.
+		
+		String output = "";
+		
+	try
+		{
+		
+		//invoking connection object.
+		Connection con = dbConnect.connect();
+			
+			if (con == null)
+			{
+				return "Error while connecting to the database for reading!";
+			}
+			
+			// Prepare the html table to be displayed.
+			
+			//Cannot view personal payment details.
+			
+				output = "<table border=‘1’><tr><th>Payment Type</th>"
+				+"<th>Bank Name</th>"
+				+ "<th>Payment Date</th>"
+				+ "<th>Name on card</th>"
+				+ "<th>ConsumerID</th>"
+				+ "<th>BuyerAmount</th>"
+				+ "<th>ProductID</th>"
+				+ "<th>Update</th>"
+				+ "<th>Remove</th></tr>";
+				
+				
+				String query = "select * from paymentservice.gb_payments where UserType = 'Buyer'";
+				
+				Statement stmt = con.createStatement();
+				
+				ResultSet rs = stmt.executeQuery(query);
+				
+				// iterate through the rows in the result set.
+				
+				while (rs.next())
+				{
+					String PaymentID = rs.getString("PaymentID");
+					String PaymentType = rs.getString("PaymentType");
+					String BankName = rs.getString("bank");
+					String paymentDate = rs.getString("paymentDate");
+					String CardName= rs.getString("NameOnCard");
+					double buyerAmt = rs.getDouble("Buyerpayment");
+					String productID =  rs.getString("ProductID");
+					String consumerID =  rs.getString("ConsumerID");
+					String conceptID =  rs.getString("ConceptID");
+					//String cardExpMonth =  Integer.toString(rs.getInt("cardExpMonth"));
+					//String cardExpYear = Integer.toString(rs.getInt("cardExpYear"));
+					
+					
+					// Add into the html table.
+					
+					output += "<tr><td>" + PaymentType + "</td>";
+					output += "<td>" + BankName + "</td>";
+					output += "<td>" + paymentDate + "</td>";
+					output += "<td>" + CardName + "</td>";
+					output += "<td>" + consumerID + "</td>";
+					output += "<td>" + buyerAmt + "</td>";
 					output += "<td>" + productID + "</td>";
 					
 					
@@ -380,7 +408,7 @@ public class Payment{
 		return output;
 	}
 	
-	
+
 	/*****************************************Method to read specific user payment details********************************/
 	public String readSpecificUserPayments(String name)
 	{
@@ -527,7 +555,7 @@ public class Payment{
 	
 	/***************************Method to update user payment details.****************************/
 	
-	public String updatePaymentDetails(String paymentCode,String paymentType,String bank , String cardNo , String NameOnCard ,String cvv, String cardExpMonth ,String cardExpYear)
+	public String updateBackerPaymentDetails(int PaymentID,String paymentType,String userType,String bank , String paymentDate,String cardNo , String NameOnCard ,String cvv, String cardExpMonth ,String cardExpYear,String conceptID , String consumerID)
 	{
 		//Declare variable to capture output message.
 		String output = "";
@@ -542,15 +570,9 @@ public class Payment{
 				return "Error while connecting to the database for updating!";
 			}
 			
-			//Hashing.
-			Hashing hs = new Hashing();
-			
-			String hcardNumber = hs.hashPassword(cardNo);
-			String hcvvNo = hs.hashPassword(cvv);
-			
 			// create a prepared statement.
 			
-		String query = "UPDATE gb_payments SET PaymentType=?,bank=?,cardNo=?,NameOnCard=?,cvv=?,cardExpMonth=?,cardExpYear=? WHERE paymentCode=?";
+		String query = "UPDATE gb_payments SET PaymentType=?,UserType=?,bank=?,paymentDate=?,cardNo=?,NameOnCard=?,cvv=?,cardExpMonth=?,cardExpYear=?,ConceptID=?,ConsumerID=? WHERE PaymentID=?";
 		
 		PreparedStatement preparedStmt = con.prepareStatement(query);
 		
@@ -558,19 +580,20 @@ public class Payment{
 		
 		// binding values.
 		
+		
 		preparedStmt.setString(1, paymentType);
-		preparedStmt.setString(2, bank);
-		preparedStmt.setString(3, hcardNumber);
-		preparedStmt.setString(4, NameOnCard);
-		preparedStmt.setString(5, hcvvNo);
-		preparedStmt.setString(6, cardExpMonth);
-		preparedStmt.setString(7, cardExpYear);
-		preparedStmt.setString(8, paymentCode);
+		preparedStmt.setString(2, userType);
+		preparedStmt.setString(3, bank);
+		preparedStmt.setString(4, paymentDate);
+		preparedStmt.setString(5, cardNo);
+		preparedStmt.setString(6, NameOnCard);
+		preparedStmt.setString(7, cvv);
+		preparedStmt.setString(8, cardExpMonth);
+		preparedStmt.setString(9, cardExpYear);
+		preparedStmt.setString(10, conceptID);
+		preparedStmt.setString(11, consumerID);
+		preparedStmt.setInt(12, PaymentID);
 		
-		/***********Table for hash values.*******************/
-		
-		insertcardNumberforkey(cardNo, hcardNumber);
-		insertCvvForKey(cvv,hcvvNo);
 		
 		// execute the statement.
 		preparedStmt.execute();
@@ -578,11 +601,10 @@ public class Payment{
 		
 		con.close();
 		
-		String payments = readPayments();
+		String payments = readBackerPayments();
 		output = "{\"status\":\"success\", \"data\": \"" +
 				payments + "\"}";
 		
-		//output = "Payment details for " + paymentCode + "Updated successfully!";
 		
 		}
 		catch (Exception e)
@@ -598,7 +620,7 @@ public class Payment{
 	
 	
 	/*Method to delete  backed funds for incomplete projects.*/
-	public String deletePayment(String status) {
+	public String deleteBackerPayment(String PaymentID) {
 		
 		//declare variabe to capure output message.
 		String output = "";
@@ -606,95 +628,34 @@ public class Payment{
 		//check for connectivity.
 		Connection con = dbConnect.connect();
 		
-		String sql = "delete from paymentdb.gb_payments p where p.PaymentID > 0 AND p.ConceptID IN (select c.conceptCode from concept_service.concept c where c.status = '"+status+"')" ;
+		//String sql = "delete from paymentdb.gb_payments p where p.PaymentID > 0 AND p.ConceptID IN (select c.conceptCode from concept_service.concept c where c.status = '"+status+"')" ;
 		
+		String sql = "delete from paymentservice.gb_payments p where p.PaymentID=?";
 		try{
 			
 			PreparedStatement preparedStmt = con.prepareStatement(sql);
-
-			preparedStmt.executeUpdate();
+			
+			// binding values
+			preparedStmt.setInt(1, Integer.parseInt(PaymentID));
+			
+			// execute the statement
+			preparedStmt.execute();
+			con.close();
 			
 			output = "Payments Deleted Successfully!!";
+			
+			String newBackerPayment = readBackerPayments();
+			output = "{\"status\":\"success\", \"data\": \"" + newBackerPayment + "\"}";
 		}
 		catch (Exception e) {
 			
-			output = "Error while deleting payment!";
-			
-			e.printStackTrace();
+			output = "{\"status\":\"error\", \"data\": \"Error while deleting the backer payment.\"}";
+			System.err.println(e.getMessage());
 		}
 		
 		return output;
 	}
 	
-
-	
-	/********************methods to manage hashing tables**********************************************************/
-	
-	/**********Separate table containing hashed values are maintained.********************/
-	
-  public int insertcardNumberforkey(String cardNo, String hcardNumber) throws SQLException {
-		
-		Connection con = dbConnect.connect();
-		
-		//Making Key Value pairs.
-		//Name.
-		String query1 = "INSERT INTO hCardNo(`id`, `nKey`, `nvalue`) VALUES(?,?,?)" ;
-		
-		PreparedStatement preparedStmt  = con.prepareStatement(query1);
-		
-		//Binding values.
-		preparedStmt.setInt(1, 0);
-		preparedStmt.setString(2, cardNo);
-		preparedStmt.setString(3, hcardNumber);
-		
-		//Execute the statement.
-		preparedStmt.execute();
-		
-		return 0;
-	}  
-  
-  public int insertcardholderNameforkey(String nameOnCard, String hCardHolderName) throws SQLException {
-		
-		Connection con = dbConnect.connect();
-		
-		//Making Key Value pairs.
-		//Name.
-		
-		String query1 = "INSERT INTO hCardName(`id`, `nKey`, `nvalue`) VALUES(?,?,?)" ;
-		PreparedStatement preparedStmt  = con.prepareStatement(query1);
-		
-		//Binding values.
-		preparedStmt.setInt(1, 0);
-		preparedStmt.setString(2, nameOnCard);
-		preparedStmt.setString(3, hCardHolderName);
-		
-		//Execute the statement.
-		preparedStmt.execute();
-		
-		return 0;
-	}
-  
- public int insertCvvForKey(String cvv,String hcvvNo) throws SQLException {
-		
-		Connection con = dbConnect.connect();
-		
-		//Making Key Value pairs.
-		//Name.
-		String query1 = "INSERT INTO hCVV(`id`, `nKey`, `nvalue`) VALUES(?,?,?)" ;
-		PreparedStatement preparedStmt  = con.prepareStatement(query1);
-		
-		//Binding values.
-		preparedStmt.setInt(1, 0);
-		preparedStmt.setString(2, cvv);
-		preparedStmt.setString(3, hcvvNo);
-		
-		//Execute the statement.
-		preparedStmt.execute();
-		
-		return 0;
-	}
- 
-
 	
 	
 }

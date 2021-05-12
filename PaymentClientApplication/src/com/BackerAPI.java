@@ -54,7 +54,7 @@ public class BackerAPI extends HttpServlet {
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Map paras = getParasMap(request);
 		
-		String output = paymentObj.updateBackerPaymentDetails((int) paras.get("hidItemIDSave"),
+		String output = paymentObj.updateBackerPaymentDetails(paras.get("hidItemIDSave").toString(),
 				paras.get("PaymentType").toString(),
 				paras.get("UserType").toString(),
 				paras.get("bank").toString(),
@@ -71,7 +71,11 @@ public class BackerAPI extends HttpServlet {
 
 	
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		Map paras = getParasMap(request);
+		
+		String output = paymentObj.deleteBackerPayment(paras.get("PaymentID").toString());
+		
+		response.getWriter().write(output);
 	}
 	
 	

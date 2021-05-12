@@ -249,9 +249,14 @@ public class Payment{
 			//Cannot view personal payment details.
 			
 				output = "<table border=‘1’><tr><th>Payment Type</th>"
+				+"<th>User Type</th>"
 				+"<th>Bank Name</th>"
 				+ "<th>Payment Date</th>"
+				+ "<th>Card Number</th>"
 				+ "<th>Name on card</th>"
+				+ "<th>CVV</th>"
+				+ "<th>CardExpiry Month</th>"
+				+ "<th>CardExpiry Year</th>"
 				+ "<th>ConsumerID</th>"
 				+ "<th>ConceptID</th>"
 				+ "<th>Update</th>"
@@ -259,7 +264,7 @@ public class Payment{
 				
 				
 				String query = "select * from paymentservice.gb_payments where UserType = 'Backer'";
-				//String query = "select * from gb_payments p";
+				
 				Statement stmt = con.createStatement();
 				
 				ResultSet rs = stmt.executeQuery(query);
@@ -270,11 +275,14 @@ public class Payment{
 				{
 					String PaymentID = rs.getString("PaymentID");
 					String PaymentType = rs.getString("PaymentType");
+					String UserType = rs.getString("UserType");
 					String BankName = rs.getString("bank");
 					String paymentDate = rs.getString("paymentDate");
+					String CardNumber= rs.getString("cardNo");
 					String CardName= rs.getString("NameOnCard");
-					double buyerAmt = rs.getDouble("Buyerpayment");
-					String productID =  rs.getString("ProductID");
+					String CVV = rs.getString("cvv");
+					String CardExpMonth = rs.getString("cardExpMonth");
+					String CardExpYear = rs.getString("cardExpYear");
 					String consumerID =  rs.getString("ConsumerID");
 					String conceptID =  rs.getString("ConceptID");
 					//String cardExpMonth =  Integer.toString(rs.getInt("cardExpMonth"));
@@ -284,9 +292,14 @@ public class Payment{
 					// Add into the html table.
 					
 					output += "<tr><td>" + PaymentType + "</td>";
+					output += "<td>" + UserType + "</td>";
 					output += "<td>" + BankName + "</td>";
 					output += "<td>" + paymentDate + "</td>";
+					output += "<td>" + CardNumber + "</td>";
 					output += "<td>" + CardName + "</td>";
+					output += "<td>" + CVV + "</td>";
+					output += "<td>" + CardExpMonth + "</td>";
+					output += "<td>" + CardExpYear + "</td>";
 					output += "<td>" + consumerID + "</td>";
 					output += "<td>" + conceptID + "</td>";
 					
@@ -339,12 +352,17 @@ public class Payment{
 			//Cannot view personal payment details.
 			
 				output = "<table border=‘1’><tr><th>Payment Type</th>"
+				+"<th>UserType</th>"
 				+"<th>Bank Name</th>"
 				+ "<th>Payment Date</th>"
+				+ "<th>Card Number</th>"
 				+ "<th>Name on card</th>"
-				+ "<th>ConsumerID</th>"
+				+ "<th>Cvv</th>"
+				+ "<th>CardExpiryMonth</th>"
+				+ "<th>CardExpiryYear</th>"	
 				+ "<th>BuyerAmount</th>"
 				+ "<th>ProductID</th>"
+				+ "<th>ConsumerID</th>"
 				+ "<th>Update</th>"
 				+ "<th>Remove</th></tr>";
 				
@@ -361,26 +379,34 @@ public class Payment{
 				{
 					String PaymentID = rs.getString("PaymentID");
 					String PaymentType = rs.getString("PaymentType");
+					String UserType = rs.getString("UserType");
 					String BankName = rs.getString("bank");
 					String paymentDate = rs.getString("paymentDate");
+					String CardNumber= rs.getString("cardNo");
 					String CardName= rs.getString("NameOnCard");
+					String cvv= rs.getString("cvv");
+					String CardExpMonth= rs.getString("cardExpMonth");
+					String CardExpYear= rs.getString("cardExpYear");
 					double buyerAmt = rs.getDouble("Buyerpayment");
 					String productID =  rs.getString("ProductID");
 					String consumerID =  rs.getString("ConsumerID");
-					String conceptID =  rs.getString("ConceptID");
-					//String cardExpMonth =  Integer.toString(rs.getInt("cardExpMonth"));
-					//String cardExpYear = Integer.toString(rs.getInt("cardExpYear"));
+	
 					
 					
 					// Add into the html table.
 					
 					output += "<tr><td>" + PaymentType + "</td>";
+					output += "<td>" + UserType + "</td>";
 					output += "<td>" + BankName + "</td>";
 					output += "<td>" + paymentDate + "</td>";
+					output += "<td>" + CardNumber + "</td>";
 					output += "<td>" + CardName + "</td>";
-					output += "<td>" + consumerID + "</td>";
+					output += "<td>" + cvv + "</td>";
+					output += "<td>" + CardExpMonth + "</td>";
+					output += "<td>" + CardExpYear + "</td>";
 					output += "<td>" + buyerAmt + "</td>";
 					output += "<td>" + productID + "</td>";
+					output += "<td>" + consumerID + "</td>";
 					
 					
 					// buttons
@@ -553,9 +579,9 @@ public class Payment{
 		
 		}
 	
-	/***************************Method to update user payment details.****************************/
+	/***************************Method to update backer payment details.****************************/
 	
-	public String updateBackerPaymentDetails(int PaymentID,String paymentType,String userType,String bank , String paymentDate,String cardNo , String NameOnCard ,String cvv, String cardExpMonth ,String cardExpYear,String conceptID , String consumerID)
+	public String updateBackerPaymentDetails(String PaymentID,String paymentType,String UserType,String bank , String paymentDate,String cardNo , String NameOnCard ,String cvv, String cardExpMonth ,String cardExpYear,String conceptID , String consumerID)
 	{
 		//Declare variable to capture output message.
 		String output = "";
@@ -572,7 +598,74 @@ public class Payment{
 			
 			// create a prepared statement.
 			
-		String query = "UPDATE gb_payments SET PaymentType=?,UserType=?,bank=?,paymentDate=?,cardNo=?,NameOnCard=?,cvv=?,cardExpMonth=?,cardExpYear=?,ConceptID=?,ConsumerID=? WHERE PaymentID=?";
+		String query = "UPDATE paymentservice.gb_payments SET PaymentType=?,UserType=?,bank=?,paymentDate=?,cardNo=?,NameOnCard=?,cvv=?,cardExpMonth=?,cardExpYear=?,ConceptID=?,ConsumerID=? WHERE PaymentID=?";
+		
+		PreparedStatement preparedStmt = con.prepareStatement(query);
+		
+		
+		
+		// binding values.
+		
+		
+		preparedStmt.setString(1, paymentType);
+		preparedStmt.setString(2, UserType);
+		preparedStmt.setString(3, bank);
+		preparedStmt.setString(4, paymentDate);
+		preparedStmt.setString(5, cardNo);
+		preparedStmt.setString(6, NameOnCard);
+		preparedStmt.setString(7, cvv);
+		preparedStmt.setString(8, cardExpMonth);
+		preparedStmt.setString(9, cardExpYear);
+		preparedStmt.setString(10, conceptID);
+		preparedStmt.setString(11, consumerID);
+		preparedStmt.setString(12, PaymentID);
+		
+		
+		// execute the statement.
+		preparedStmt.execute();
+		
+		
+		con.close();
+		
+		String payments = readBackerPayments();
+		output = "{\"status\":\"success\", \"data\": \"" +
+				payments + "\"}";
+		
+		
+		}
+		catch (Exception e)
+		{
+			output = "{\"status\":\"error\", \"data\":\"Error while updating the backer payment.\"}";
+					System.err.println(e.getMessage());
+		}
+		
+			return output;
+		}
+		
+	
+	
+	
+	
+	/***************************Method to update buyer payment details.****************************/
+	
+	public String updateBuyerPaymentDetails(String PaymentID,String paymentType,String userType,String bank , String paymentDate,String cardNo , String NameOnCard ,String cvv, String cardExpMonth ,String cardExpYear,String productID , String consumerID)
+	{
+		//Declare variable to capture output message.
+		String output = "";
+		
+		try
+		{
+			//check for connectivity.
+			Connection con = dbConnect.connect();
+			
+			if (con == null)
+			{
+				return "Error while connecting to the database for updating!";
+			}
+			
+			// create a prepared statement.
+			
+		String query = "UPDATE paymentservice.gb_payments SET PaymentType=?,UserType=?,bank=?,paymentDate=?,cardNo=?,NameOnCard=?,cvv=?,cardExpMonth=?,cardExpYear=?,ProductID=?,ConsumerID=? WHERE PaymentID=?";
 		
 		PreparedStatement preparedStmt = con.prepareStatement(query);
 		
@@ -590,9 +683,9 @@ public class Payment{
 		preparedStmt.setString(7, cvv);
 		preparedStmt.setString(8, cardExpMonth);
 		preparedStmt.setString(9, cardExpYear);
-		preparedStmt.setString(10, conceptID);
+		preparedStmt.setString(10, productID);
 		preparedStmt.setString(11, consumerID);
-		preparedStmt.setInt(12, PaymentID);
+		preparedStmt.setString(12, PaymentID);
 		
 		
 		// execute the statement.
@@ -601,7 +694,7 @@ public class Payment{
 		
 		con.close();
 		
-		String payments = readBackerPayments();
+		String payments = readBuyerPayments();
 		output = "{\"status\":\"success\", \"data\": \"" +
 				payments + "\"}";
 		
@@ -609,13 +702,12 @@ public class Payment{
 		}
 		catch (Exception e)
 		{
-			output = "{\"status\":\"error\", \"data\":\"Error while updating the payment.\"}";
+			output = "{\"status\":\"error\", \"data\":\"Error while updating the buyer payment.\"}";
 					System.err.println(e.getMessage());
 		}
 		
 			return output;
 		}
-		
 	
 	
 	
@@ -636,7 +728,7 @@ public class Payment{
 			PreparedStatement preparedStmt = con.prepareStatement(sql);
 			
 			// binding values
-			preparedStmt.setInt(1, Integer.parseInt(PaymentID));
+			preparedStmt.setString(1, PaymentID);
 			
 			// execute the statement
 			preparedStmt.execute();
@@ -655,6 +747,44 @@ public class Payment{
 		
 		return output;
 	}
+	
+	
+public String deleteBuyerPayment(String PaymentID) {
+		
+		//declare variabe to capure output message.
+		String output = "";
+		 
+		//check for connectivity.
+		Connection con = dbConnect.connect();
+		
+		//String sql = "delete from paymentdb.gb_payments p where p.PaymentID > 0 AND p.ConceptID IN (select c.conceptCode from concept_service.concept c where c.status = '"+status+"')" ;
+		
+		String sql = "delete from paymentservice.gb_payments p where p.PaymentID=?";
+		try{
+			
+			PreparedStatement preparedStmt = con.prepareStatement(sql);
+			
+			// binding values
+			preparedStmt.setString(1, PaymentID);
+			
+			// execute the statement
+			preparedStmt.execute();
+			con.close();
+			
+			output = "Payments Deleted Successfully!!";
+			
+			String newBuyerPayment = readBuyerPayments();
+			output = "{\"status\":\"success\", \"data\": \"" + newBuyerPayment + "\"}";
+		}
+		catch (Exception e) {
+			
+			output = "{\"status\":\"error\", \"data\": \"Error while deleting the buyer payment.\"}";
+			System.err.println(e.getMessage());
+		}
+		
+		return output;
+	}
+	
 	
 	
 	

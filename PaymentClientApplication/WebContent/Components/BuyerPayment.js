@@ -131,9 +131,54 @@ $(document).on("click", ".btnUpdate", function(event)
 	$("#cvv").val($(this).closest("tr").find('td:eq(6)').text());
 	$("#cmonth").val($(this).closest("tr").find('td:eq(7)').text());
 	$("#cyear").val($(this).closest("tr").find('td:eq(8)').text());
-	$("#Concept").val($(this).closest("tr").find('td:eq(9)').text());
-	$("#cName").val($(this).closest("tr").find('td:eq(10)').text());
+	$("#Product").val($(this).closest("tr").find('td:eq(10)').text());
+	$("#cName").val($(this).closest("tr").find('td:eq(11)').text());
 });
+
+
+
+$(document).on("click", ".btnRemove", function(event)
+{
+$.ajax(
+{
+	url : "BuyerAPI",
+	type : "DELETE",
+	data : "PaymentID=" + $(this).data("itemid"),
+	dataType : "text",
+	complete : function(response, status)
+{
+	onBuyerPaymentDeleteComplete(response.responseText, status);
+}
+});
+})
+
+
+function onBuyerPaymentDeleteComplete(response, status)
+{
+if (status == "success")
+{
+	var resultSet = JSON.parse(response);
+	if (resultSet.status.trim() == "success")
+	{
+		$("#alertSuccess").text("Successfully deleted.");
+		$("#alertSuccess").show();
+		$("#divItemsGrid").html(resultSet.data);
+	} else if (resultSet.status.trim() == "error")
+	{
+		$("#alertError").text(resultSet.data);
+		$("#alertError").show();
+	}
+	} else if (status == "error")
+	{
+		$("#alertError").text("Error while deleting.");
+		$("#alertError").show();
+	} else
+	{
+		$("#alertError").text("Unknown error while deleting..");
+		$("#alertError").show();
+	}
+}
+
 
 
 

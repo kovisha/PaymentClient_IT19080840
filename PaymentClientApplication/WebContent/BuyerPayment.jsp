@@ -13,9 +13,15 @@
 <script src="Components/BuyerPayment.js"></script>
 </head>
 <body>
+<br><br>
 
 		<div class="container"><div class="row"><div class="col-6">
-		<h1>Buyer Payment</h1>
+		<div class = "card text-dark special-card ">
+		
+		
+		<div class = "card-body">
+		
+		<h1 class="text-info" class="card text-center" class="card-title">Buyer Payment</h1><br>
 		<form id="formBuyer" name="formBuyer">
 		
 		
@@ -108,7 +114,7 @@
 		<input id="cName" name="cName" type="text"
 		class="form-control form-control-sm">
 		<br>
-		<input id="btnSave" name="btnSave" type="button" value="Save" class="btn btn-primary">
+		<input id="btnSave" name="btnSave" type="button" value="Add Buyer Payments" class="btn btn-info">
 		<input type="hidden" id="hidItemIDSave" name="hidItemIDSave" value="">
 		</form>
 		
@@ -116,6 +122,12 @@
 		<div id="alertSuccess" class="alert alert-success"></div>
 		<div id="alertError" class="alert alert-danger"></div>
 		<br>
+		
+		</div> </div> </div></div></div>
+		
+		<br><br>
+		
+		<div class="container"><div class="row"><div class="col-6">
 		
 		
 		<div id="divItemsGrid">

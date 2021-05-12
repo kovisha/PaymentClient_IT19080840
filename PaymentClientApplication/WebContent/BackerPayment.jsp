@@ -15,8 +15,15 @@
 </head>
 <body>
 
+<br><br>
+
 		<div class="container"><div class="row"><div class="col-6">
-		<h1>Backer Payment</h1>
+		<div class = "card text-dark special-card ">
+		
+		
+		<div class = "card-body">
+		
+		<h1 class="text-info" class="card text-center" class="card-title">Backer Payment</h1><br>
 		<form id="formBacker" name="formBacker">
 		
 		Payment Type:
@@ -108,15 +115,26 @@
 		<input id="cName" name="cName" type="text"
 		class="form-control form-control-sm">
 		<br>
-		<input id="btnSave" name="btnSave" type="button" value="Save" class="btn btn-primary">
+			
+					<input id="btnSave" name="btnSave" type="button" value="Add Backer payment" class="btn btn-info">
 		
-		<input type="hidden" id="hidItemIDSave" name="hidItemIDSave" value = "">
-		</form>
+					<input type="hidden" id="hidItemIDSave" name="hidItemIDSave" value = "">
+			</form>		
+					
+		
 		
 		
 		<div id="alertSuccess" class="alert alert-success"></div>
 		<div id="alertError" class="alert alert-danger"></div>
 		<br>
+		
+	
+		
+		</div> </div> </div></div></div>
+		
+		<br><br>
+		
+		<div class="container"><div class="row"><div class="col-6">
 		
 		
 		<div id="divItemsGrid">
@@ -126,7 +144,8 @@
 		%>
 		</div>
 		
-		</div> </div> </div>
+		</div></div></div>
+		
 <br><br>
 
 </body>

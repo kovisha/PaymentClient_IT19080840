@@ -6,15 +6,13 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 
 
 
 import util.DBConnection;
-import Security.Hashing;
-import model.PaymentModel;
+
 
 /****************************SERVER MODEL CLASS IMPEMENTING SERVICE BUSINESS LOGIC.****************************************/
 
@@ -49,7 +47,6 @@ public class Payment{
 			{
 				return "Error while connecting to the database.";
 			}
-			
 			
 			
 			/*************Executing logic for Auto-generating payment id.******************************************************/	
@@ -117,7 +114,7 @@ public class Payment{
 	
 	
 	
-	/*****Inserting buyer payment********/
+	/*********************************Inserting buyer payment****************************************/
 	public String insertBuyerPayment(String ConsumerID,String ProductID,String UserType,String paymentType, String bank, String paymentDate, String cardNo , 
 			String NameOnCard, String cvv , 
 			String cardExpMonth , String cardExpYear 
@@ -141,8 +138,6 @@ public class Payment{
 			}
 			
 	
-				
-			
 			/*************Executing logic for Auto-generating payment id.******************************************************/	
 			
 			//Preparing a CallableStatement to call the implemented function.
@@ -184,7 +179,6 @@ public class Payment{
 			PreparedStatement preparedStmt = con.prepareStatement(query);
 			
 			
-			
 				// binding values.
 			
 			preparedStmt.setInt(1, 0);
@@ -213,7 +207,6 @@ public class Payment{
 			String newBuyerPayment = readBuyerPayments();
 			output = "{\"status\":\"success\", \"data\": \"" + newBuyerPayment + "\"}";
 			
-			//output = "Buyer payment Inserted successfully" + "\n Your payment ID is: "  + PaymentCode;
 			
 	}
 	catch (Exception e)
@@ -248,7 +241,7 @@ public class Payment{
 			
 			//Cannot view personal payment details.
 			
-				output = "<table border=‘1’><tr><th>Payment Type</th>"
+				output = "<table class='table table-bordered' border=‘1’><tr><th>Payment Type</th>"
 				+"<th>User Type</th>"
 				+"<th>Bank Name</th>"
 				+ "<th>Payment Date</th>"
@@ -285,8 +278,6 @@ public class Payment{
 					String CardExpYear = rs.getString("cardExpYear");
 					String consumerID =  rs.getString("ConsumerID");
 					String conceptID =  rs.getString("ConceptID");
-					//String cardExpMonth =  Integer.toString(rs.getInt("cardExpMonth"));
-					//String cardExpYear = Integer.toString(rs.getInt("cardExpYear"));
 					
 					
 					// Add into the html table.
@@ -306,7 +297,7 @@ public class Payment{
 					
 					// buttons
 					output += "<td><input name='btnUpdate' type='button' value='Update' "
-					+ "class='btnUpdate btn btn-secondary' data-itemid='" + PaymentID + "'></td>"
+					+ "class='btnUpdate btn btn-warning' data-itemid='" + PaymentID + "'></td>"
 					+ "<td><input name='btnRemove' type='button' value='Remove' "
 					+ "class='btnRemove btn btn-danger' data-itemid='" + PaymentID + "'></td></tr>";
 					
@@ -321,7 +312,7 @@ public class Payment{
 		}
 		catch (Exception e)
 		{
-				output = "Error while reading the payments!";
+				output = "Error while reading the backer payment!";
 				
 				System.err.println(e.getMessage());
 		}
@@ -349,9 +340,8 @@ public class Payment{
 			
 			// Prepare the html table to be displayed.
 			
-			//Cannot view personal payment details.
 			
-				output = "<table border=‘1’><tr><th>Payment Type</th>"
+				output = "<table class='table table-bordered' border=‘1’><tr><th>Payment Type</th>"
 				+"<th>UserType</th>"
 				+"<th>Bank Name</th>"
 				+ "<th>Payment Date</th>"
@@ -411,7 +401,7 @@ public class Payment{
 					
 					// buttons
 					output += "<td><input name='btnUpdate' type='button' value='Update' "
-					+ "class='btnUpdate btn btn-secondary' data-itemid='" + PaymentID + "'></td>"
+					+ "class='btnUpdate btn btn-warning' data-itemid='" + PaymentID + "'></td>"
 					+ "<td><input name='btnRemove' type='button' value='Remove' "
 					+ "class='btnRemove btn btn-danger' data-itemid='" + PaymentID + "'></td></tr>";
 					
@@ -426,112 +416,13 @@ public class Payment{
 		}
 		catch (Exception e)
 		{
-				output = "Error while reading the payments!";
+				output = "Error while reading the buyer payment!";
 				
 				System.err.println(e.getMessage());
 		}
 	
 		return output;
 	}
-	
-
-	/*****************************************Method to read specific user payment details********************************/
-	public String readSpecificUserPayments(String name)
-	{
-		//Declare variable to capture output message.
-		
-		String output = "";
-		
-	try
-		{
-		//check for connectivity.
-		Connection con = dbConnect.connect();
-			
-			if (con == null)
-			{
-				return "Error while connecting to the database for reading!";
-			}
-			
-			// Prepare the html table to be displayed.
-			
-			//All user details visible to user.
-				output = "<table border=‘1’><tr><th>Payment Type</th>"
-				+"<th>Bank Name</th>"
-				+ "<th>Payment Date</th>"
-				+ "<th>Card Number</th>"
-				+ "<th>Name On Card</th>"
-				+ "<th>CVV</th>"
-				+ "<th>BuyerPayment</th>"
-				+ "<th>ConsumerID</th>"
-				+ "<th>ConceptID</th>"
-				+ "<th>ProductID</th>";
-				
-				
-				String query = "select p.PaymentType , p.bank , p.paymentDate , ho.nKey AS cardNo ,   p.NameOnCard , hv.nKey AS cvv, p.Buyerpayment , p.ProductID , p.ConsumerID , p.ConceptID from gb_payments p ,  hcardno ho , hcvv hv where  p.cardNo = ho.nvalue AND p.cvv = hv.nvalue AND p.NameOnCard = '"+name+"'";
-				
-				
-			
-				Statement stmt = con.createStatement();
-				
-				ResultSet rs = stmt.executeQuery(query);
-				
-				// iterate through the rows in the result set.
-				
-				while (rs.next())
-				{
-					
-					String PaymentType = rs.getString("PaymentType");
-					String BankName = rs.getString("bank");
-					String paymentDate = rs.getString("paymentDate");
-					String cardNumber = rs.getNString("cardNo");
-					String CardName= rs.getString("NameOnCard");
-					String cvv = rs.getString("cvv");
-					double buyerAmt = rs.getDouble("Buyerpayment");
-					String productID =  rs.getString("ProductID");
-					String consumerID =  rs.getString("ConsumerID");
-					String conceptID =  rs.getString("ConceptID");
-					//String cardExpMonth =  Integer.toString(rs.getInt("cardExpMonth"));
-					//String cardExpYear = Integer.toString(rs.getInt("cardExpYear"));
-					System.out.println(cardNumber);
-					
-					
-					
-					// Add into the html table.
-					
-					output += "<tr><td>" + PaymentType + "</td>";
-					output += "<td>" + BankName + "</td>";
-					output += "<td>" + paymentDate + "</td>";
-					output += "<td>" + cardNumber + "</td>";
-					output += "<td>" + CardName + "</td>";
-					output += "<td>" + cvv + "</td>";
-					output += "<td>" + buyerAmt + "</td>";
-					output += "<td>" + consumerID + "</td>";
-					output += "<td>" + conceptID + "</td>";
-					output += "<td>" + productID + "</td>";
-					
-					
-						
-					}
-				
-				con.close();
-				
-				
-				// Complete the html table.
-					output += "</table>";
-		}
-		catch (Exception e)
-		{
-				output = "Error while reading the payments!";
-				
-				System.err.println(e.getMessage());
-		}
-	
-		return output;
-	}
-	
-	
-	
-	
 	
 	
 	/**************************Method to handle payment status depending on pledegAmount summation**********************/
@@ -643,9 +534,6 @@ public class Payment{
 		}
 		
 	
-	
-	
-	
 	/***************************Method to update buyer payment details.****************************/
 	
 	public String updateBuyerPaymentDetails(String PaymentID,String paymentType,String userType,String bank , String paymentDate,String cardNo , String NameOnCard ,String cvv, String cardExpMonth ,String cardExpYear,String productID , String consumerID)
@@ -668,8 +556,6 @@ public class Payment{
 		String query = "UPDATE paymentservice.gb_payments SET PaymentType=?,UserType=?,bank=?,paymentDate=?,cardNo=?,NameOnCard=?,cvv=?,cardExpMonth=?,cardExpYear=?,ProductID=?,ConsumerID=? WHERE PaymentID=?";
 		
 		PreparedStatement preparedStmt = con.prepareStatement(query);
-		
-		
 		
 		// binding values.
 		
@@ -710,7 +596,6 @@ public class Payment{
 		}
 	
 	
-	
 	/*Method to delete  backed funds for incomplete projects.*/
 	public String deleteBackerPayment(String PaymentID) {
 		
@@ -734,7 +619,7 @@ public class Payment{
 			preparedStmt.execute();
 			con.close();
 			
-			output = "Payments Deleted Successfully!!";
+			output = "Backer Payments Deleted Successfully!!";
 			
 			String newBackerPayment = readBackerPayments();
 			output = "{\"status\":\"success\", \"data\": \"" + newBackerPayment + "\"}";
@@ -749,41 +634,40 @@ public class Payment{
 	}
 	
 	
-public String deleteBuyerPayment(String PaymentID) {
-		
-		//declare variabe to capure output message.
-		String output = "";
-		 
-		//check for connectivity.
-		Connection con = dbConnect.connect();
-		
-		//String sql = "delete from paymentdb.gb_payments p where p.PaymentID > 0 AND p.ConceptID IN (select c.conceptCode from concept_service.concept c where c.status = '"+status+"')" ;
-		
-		String sql = "delete from paymentservice.gb_payments p where p.PaymentID=?";
-		try{
+	public String deleteBuyerPayment(String PaymentID) {
 			
-			PreparedStatement preparedStmt = con.prepareStatement(sql);
+			//declare variabe to capure output message.
+			String output = "";
+			 
+			//check for connectivity.
+			Connection con = dbConnect.connect();
 			
-			// binding values
-			preparedStmt.setString(1, PaymentID);
 			
-			// execute the statement
-			preparedStmt.execute();
-			con.close();
+			String sql = "delete from paymentservice.gb_payments p where p.PaymentID=?";
+			try{
+				
+				PreparedStatement preparedStmt = con.prepareStatement(sql);
+				
+				// binding values
+				preparedStmt.setString(1, PaymentID);
+				
+				// execute the statement
+				preparedStmt.execute();
+				con.close();
+				
+				output = "Buyer Payments Deleted Successfully!!";
+				
+				String newBuyerPayment = readBuyerPayments();
+				output = "{\"status\":\"success\", \"data\": \"" + newBuyerPayment + "\"}";
+			}
+			catch (Exception e) {
+				
+				output = "{\"status\":\"error\", \"data\": \"Error while deleting the buyer payment.\"}";
+				System.err.println(e.getMessage());
+			}
 			
-			output = "Payments Deleted Successfully!!";
-			
-			String newBuyerPayment = readBuyerPayments();
-			output = "{\"status\":\"success\", \"data\": \"" + newBuyerPayment + "\"}";
+			return output;
 		}
-		catch (Exception e) {
-			
-			output = "{\"status\":\"error\", \"data\": \"Error while deleting the buyer payment.\"}";
-			System.err.println(e.getMessage());
-		}
-		
-		return output;
-	}
 	
 	
 	

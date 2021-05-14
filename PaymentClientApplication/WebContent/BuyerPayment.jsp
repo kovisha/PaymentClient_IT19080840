@@ -130,7 +130,7 @@
 		
 		<div class="container"><div class="row"><div class="col-6">
 		
-		
+		<!-- View details from grid -->
 		<div id="divItemsGrid">
 		<%
 		Payment payObj = new Payment();

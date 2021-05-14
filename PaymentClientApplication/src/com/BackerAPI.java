@@ -32,6 +32,7 @@ public class BackerAPI extends HttpServlet {
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
+	/***************Insert backer payment details - POST*********************/
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
@@ -51,10 +52,11 @@ public class BackerAPI extends HttpServlet {
 	}
 
 	
+	/******************Update Backer payment details - PUT**************************************/
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Map paras = getParasMap(request);
 		
-		String output = paymentObj.updateBackerPaymentDetails(paras.get("hidItemIDSave").toString(),
+		String output = paymentObj.updateBackerPaymentDetails(paras.get("hidBackerIDSave").toString(),
 				paras.get("PaymentType").toString(),
 				paras.get("UserType").toString(),
 				paras.get("bank").toString(),
@@ -69,7 +71,7 @@ public class BackerAPI extends HttpServlet {
 				response.getWriter().write(output);
 	}
 
-	
+	/******************Delete Backer payment details - DELETE**************************************/
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Map paras = getParasMap(request);
 		

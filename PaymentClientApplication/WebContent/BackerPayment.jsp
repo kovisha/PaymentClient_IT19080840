@@ -9,6 +9,9 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Backer Payment</title>
+
+<!-- Scripts and Views linked -->
+
 <link rel="stylesheet" href="Views/bootstrap.min.css">
 <script src="Components/jquery-3.6.0.min.js"></script>
 <script src="Components/BackerPayment.js"></script>
@@ -20,6 +23,7 @@
 		<div class="container"><div class="row"><div class="col-6">
 		<div class = "card text-dark special-card ">
 		
+		<!-- Form to get backer payment data -->
 		
 		<div class = "card-body">
 		
@@ -79,6 +83,7 @@
 		class="form-control form-control-sm">
 		<br>
 		
+		<!-- Populating concepts from database via drop down -->
 		ConceptName:
       	<select class="form-control input-lg" class="custom-select" id="Concept" placeholder="Concept" name = "Concept" required>
       	<option value = "-1" >Select Concept</option>
@@ -118,7 +123,7 @@
 			
 					<input id="btnSave" name="btnSave" type="button" value="Add Backer payment" class="btn btn-info">
 		
-					<input type="hidden" id="hidItemIDSave" name="hidItemIDSave" value = "">
+					<input type="hidden" id="hidBackerIDSave" name="hidBackerIDSave" value = "">
 			</form>		
 					
 		

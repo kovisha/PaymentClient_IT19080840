@@ -8,7 +8,7 @@ $(document).ready(function()
 });
 
 
-//SAVE
+/**Handle Button save feature */
 $(document).on("click", "#btnSave", function(event)
 {
 	// Clear alerts---------------------
@@ -31,7 +31,7 @@ $(document).on("click", "#btnSave", function(event)
 	
 	// If valid------------------------
 	
-	var type = ($("#hidItemIDSave").val() == "") ? "POST" : "PUT";
+	var type = ($("#hidBackerIDSave").val() == "") ? "POST" : "PUT";
 	$.ajax(
 	{
 	url : "BackerAPI",
@@ -74,7 +74,7 @@ function onBackerPaymentSaveComplete(response, status)
 		$("#alertError").text("Unknown error while saving..");
 		$("#alertError").show();
 	}
-		$("#hidItemIDSave").val("");
+		$("#hidBackerIDSave").val("");
 		$("#formBacker")[0].reset();
 }
 
@@ -117,10 +117,10 @@ return true;
 }
 
 
-
+/*Handle button update function*/ 
 $(document).on("click", ".btnUpdate", function(event)
 {
-	$("#hidItemIDSave").val($(this).data("itemid"));
+	$("#hidBackerIDSave").val($(this).data("itemid"));
 	
 	$("#PaymentType").val($(this).closest("tr").find('td:eq(0)').text());
 	$("#UserType").val($(this).closest("tr").find('td:eq(1)').text());
@@ -135,6 +135,8 @@ $(document).on("click", ".btnUpdate", function(event)
 	$("#cName").val($(this).closest("tr").find('td:eq(9)').text());
 });
 
+
+/**Handle Button delete function */
 $(document).on("click", ".btnRemove", function(event)
 {
 $.ajax(

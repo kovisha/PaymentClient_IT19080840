@@ -100,8 +100,7 @@ public class Payment{
 			
 			String newBackerPayment = readBackerPayments();
 			output = "{\"status\":\"success\", \"data\": \"" + newBackerPayment + "\"}";
-			
-			//output = "Backer payment Inserted successfully" + "\n Your payment ID is: " +  PaymentCode;
+		
 		}
 	catch (Exception e)
 	{

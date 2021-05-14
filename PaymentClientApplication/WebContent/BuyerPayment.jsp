@@ -18,6 +18,7 @@
 		<div class="container"><div class="row"><div class="col-6">
 		<div class = "card text-dark special-card ">
 		
+		<!-- Form to get buyer payment data -->
 		
 		<div class = "card-body">
 		
@@ -115,7 +116,7 @@
 		class="form-control form-control-sm">
 		<br>
 		<input id="btnSave" name="btnSave" type="button" value="Add Buyer Payments" class="btn btn-info">
-		<input type="hidden" id="hidItemIDSave" name="hidItemIDSave" value="">
+		<input type="hidden" id="hidBuyerIDSave" name="hidBuyerIDSave" value="">
 		</form>
 		
 		

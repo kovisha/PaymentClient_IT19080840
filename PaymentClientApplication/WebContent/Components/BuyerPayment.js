@@ -31,7 +31,7 @@ $(document).on("click", "#btnSave", function(event)
 	
 	// If valid------------------------
 	
-	var type = ($("#hidItemIDSave").val() == "") ? "POST" : "PUT";
+	var type = ($("#hidBuyerIDSave").val() == "") ? "POST" : "PUT";
 	$.ajax(
 	{
 	url : "BuyerAPI",
@@ -74,7 +74,7 @@ function onBuyerPaymentSaveComplete(response, status)
 		$("#alertError").text("Unknown error while saving..");
 		$("#alertError").show();
 	}
-		$("#hidItemIDSave").val("");
+		$("#hidBuyerIDSave").val("");
 		$("#formBuyer")[0].reset();
 }
 
@@ -120,7 +120,7 @@ return true;
 
 $(document).on("click", ".btnUpdate", function(event)
 {
-	$("#hidItemIDSave").val($(this).data("itemid"));
+	$("#hidBuyerIDSave").val($(this).data("itemid"));
 	
 	$("#PaymentType").val($(this).closest("tr").find('td:eq(0)').text());
 	$("#UserType").val($(this).closest("tr").find('td:eq(1)').text());

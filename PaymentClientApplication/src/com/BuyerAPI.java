@@ -29,7 +29,7 @@ public class BuyerAPI extends HttpServlet {
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
-	
+	/*******************************Insert BUyer Payment details - POST**************************/
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String output = paymentObj.insertBuyerPayment(request.getParameter("cName"),
 				request.getParameter("Product"),
@@ -45,11 +45,11 @@ public class BuyerAPI extends HttpServlet {
 				response.getWriter().write(output);
 	}
 
-	
+	/*******************************Update BUyer Payment details - PUT**************************/
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Map paras = getParasMap(request);
 		
-		String output = paymentObj.updateBuyerPaymentDetails( paras.get("hidItemIDSave").toString(),
+		String output = paymentObj.updateBuyerPaymentDetails( paras.get("hidBuyerIDSave").toString(),
 				paras.get("PaymentType").toString(),
 				paras.get("UserType").toString(),
 				paras.get("bank").toString(),
@@ -64,7 +64,7 @@ public class BuyerAPI extends HttpServlet {
 				response.getWriter().write(output);
 	}
 
-	
+	/*******************************Delete BUyer Payment details - DELETE**************************/
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Map paras = getParasMap(request);
 		
